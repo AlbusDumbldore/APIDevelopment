@@ -1,17 +1,25 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 
 const server = express();
+server.use(express.json());
 
-server.get('/', (req: Request, res: Response) => {
-  console.log('Пришёл GET / запрос');
-
-  res.json({ message: 'Hello World!' });
+server.get('/user/:id/news/:newsId', (req, res) => {
+  const { id, newsId } = req.params;
+  res.send('Держите новости!');
 });
 
-server.post('/', (req: Request, res: Response) => {
-  console.log('Пришёл POST / запрос');
+// не до конца понял Path параметры ?
 
-  res.send({ message: 'Goodbye World!' });
+server.get('', (req, res) => {
+  console.log('Пришли параметры:');
+  console.log(req.query);
+  res.send('Hello World!');
+});
+
+server.post('', (req, res) => {
+  console.log('Пришло тело:');
+  console.log(req.body);
+  res.send('Hello World!');
 });
 
 const port = 2000;
