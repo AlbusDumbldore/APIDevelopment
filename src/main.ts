@@ -17,6 +17,13 @@ server.get('/task/:taskId', (req: Request, res: Response) => {
   res.json({ message: `Вы пытаетесь запросить задачу с id=${taskId}` });
 });
 
+server.delete('/task/:taskId', (req: Request, res: Response) => {
+  const taskId = req.params.taskId;
+  logger.info(`Удаление задачи по id=${taskId}`);
+
+  res.json({ message: `Вы удаляете задачу с id=${taskId}` });
+});
+
 server.get('/task/list', (req: Request, res: Response) => {
   logger.info('Чтение списка задач');
 
