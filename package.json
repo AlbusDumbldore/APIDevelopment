@@ -44,6 +44,9 @@
     "endOfLine": "lf"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "koffi": "^2.11.0",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0"
   }
 }
