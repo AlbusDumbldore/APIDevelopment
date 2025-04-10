@@ -4,50 +4,57 @@ import logger from './logger';
 const server = express(); // http://localhost:2000
 server.use(express.json());
 
-server.post('/task/create', (req: Request, res: Response) => {
-  logger.info('Создание новой задачи');
+const taskRouter = express.Router();
+
+taskRouter.post('/create', (req: Request, res: Response) => {
+  logger.info('Создновой задачи');
 
   res.json({ message: 'Создание задачи' });
 });
 
-server.get('/task/:taskId', (req: Request, res: Response) => {
+taskRouter.get('/:taskId', (req: Request, res: Response) => {
   const taskId = req.params.taskId;
   logger.info(`Чтение задачи по id=${taskId}`);
 
   res.json({ message: `Вы пытаетесь запросить задачу с id=${taskId}` });
 });
 
-server.delete('/task/:taskId', (req: Request, res: Response) => {
+taskRouter.delete('/:taskId', (req: Request, res: Response) => {
   const taskId = req.params.taskId;
   logger.info(`Удаление задачи по id=${taskId}`);
 
   res.json({ message: `Вы удаляете задачу с id=${taskId}` });
 });
 
-server.get('/task/list', (req: Request, res: Response) => {
+taskRouter.get('/list', (req: Request, res: Response) => {
   logger.info('Чтение списка задач');
 
   res.json({ message: 'Вы пытаетесь запросить список задач' });
 });
 
-server.post('/user/register', (req: Request, res: Response) => {
+const userRouter = express.Router();
+
+userRouter.post('/register', (req: Request, res: Response) => {
   const body = req.body;
   logger.info('Регистрация нового пользователя');
 
   res.json({ message: 'Вы проходите процесс регистрации' });
 });
 
-server.post('/user/login', (req: Request, res: Response) => {
+userRouter.post('/login', (req: Request, res: Response) => {
   logger.info('Процесс авторизации пользователя');
 
   res.json({ message: 'Вы проходите процесс авторизации' });
 });
 
-server.get('/user/profile', (req: Request, res: Response) => {
+userRouter.get('/profile', (req: Request, res: Response) => {
   logger.info('Чтение профиля пользователя');
 
   res.json({ message: 'Вы пытаетесь запросить профиль пользователя' });
 });
+
+server.use('/user', userRouter);
+server.use('/task', taskRouter);
 
 const port = 2000;
 
