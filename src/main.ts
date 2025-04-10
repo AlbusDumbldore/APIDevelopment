@@ -1,34 +1,33 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 
-const server = express();
+const server = express(); // http://localhost:2000
 server.use(express.json());
 
-// server.get('/user/:id/news/:newsId', (req, res) => {
-//   const { id, newsId } = req.params;
-//   res.send('Держите новости!');
-//   res.json({
-//     id: newsId,
-//     newsId: req.params.id,
-//   });
-// });
-
-// server.get('', (req, res) => {
-//   console.log('Пришли параметры:');
-//   console.log(req.query);
-//   res.send('Hello!');
-// });
-
-server.post('/task/:id/task/:title/task/:description', (req, res) => {
-  console.log('Пришла задача');
-  console.log(req.body);
-  res.send(`Задача ${req.body.id}. ${req.body.title} \n Описание: ${req.body.description}`);
+server.post('/task/create', (req: Request, res: Response) => {
+  res.json({ message: 'Создание задачи' });
 });
 
-server.get('/user/profile', (req, res) => {
-  console.log('Инициализация входа');
-  console.log(req.query);
-  const user = ({ id, name, email, password, role } = req.params);
-  res.send(`Добро пожаловать, ${req.body.name}`);
+server.get('/task/:taskId', (req: Request, res: Response) => {
+  const taskId = req.params.taskId;
+
+  res.json({ message: `Вы пытаетесь запросить задачу с id=${taskId}` });
+});
+
+server.get('/task/list', (req: Request, res: Response) => {
+  res.json({ message: 'Вы патыетесь запросить список задач' });
+});
+
+server.post('/user/register', (req: Request, res: Response) => {
+  const body = req.body;
+  res.json({ message: 'Вы проходите процесс регистрации' });
+});
+
+server.post('/user/login', (req: Request, res: Response) => {
+  res.json({ message: 'Вы проходите процесс авторизации' });
+});
+
+server.get('/user/profile', (req: Request, res: Response) => {
+  res.json({ message: 'Вы пытаетесь запросить профиль пользователя' });
 });
 
 const port = 2000;
