@@ -1,7 +1,7 @@
 import express from 'express';
 import { logRoutes } from './bootstrap';
 import logger from './logger';
-import { logRequestMiddleware } from './middlewares';
+import { errorHandler, logRequestMiddleware } from './middlewares';
 import { taskRouter } from './modules/task/task.router';
 import { userRouter } from './modules/user/user.router';
 
@@ -11,6 +11,8 @@ server.use(logRequestMiddleware);
 
 server.use('/user', userRouter);
 server.use('/task', taskRouter);
+
+server.use(errorHandler);
 
 const port = 2000;
 

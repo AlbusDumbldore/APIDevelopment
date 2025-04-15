@@ -4,7 +4,7 @@ import logger from '../../logger';
 export const taskRouter = express.Router();
 
 taskRouter.post('/create', (req: Request, res: Response) => {
-  logger.info('Создновой задачи');
+  logger.info('Создание новой задачи');
 
   res.json({ message: 'Создание задачи' });
 });

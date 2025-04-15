@@ -1,19 +1,35 @@
+import { plainToInstance } from 'class-transformer';
+import { validateSync } from 'class-validator';
 import express, { Request, Response } from 'express';
 import logger from '../../logger';
+import { RegisterUserDto } from './dto';
 
 export const userRouter = express.Router();
 
 userRouter.post('/register', (req: Request, res: Response) => {
-  const body = req.body;
+  const instance = plainToInstance(RegisterUserDto, req.body);
+  const errors = validateSync(instance);
   logger.info('Регистрация нового пользователя');
 
-  res.json({ message: 'Вы проходите процесс регистрации' });
+  if (errors.length) {
+    const [{ constraints }] = errors;
+
+    let message = 'Unknown validation error';
+
+    if (constraints) {
+      const key = Object.keys(constraints)[0];
+      message = constraints[key];
+    }
+    throw Error(message);
+  }
+
+  res.json({ message: 'Вы проходите процесс регистрации', instance });
 });
 
 userRouter.post('/login', (req: Request, res: Response) => {
-  logger.info('Процесс авторизации пользователя');
+  logger.info('Процесс аутентификации пользователя');
 
-  res.json({ message: 'Вы проходите процесс авторизации' });
+  res.json({ message: 'Вы проходите процесс аутентификации' });
 });
 
 userRouter.get('/profile', (req: Request, res: Response) => {
