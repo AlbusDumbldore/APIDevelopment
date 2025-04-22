@@ -24,13 +24,12 @@ taskRouter.get('/:taskId', (req: Request, res: Response) => {
   res.json({ message: `Вы пытаетесь запросить задачу с id=${taskId}` });
 });
 
-taskRouter.delete('/:taskIdDel', (req: Request, res: Response) => {
-  const taskIdDel = req.params.taskIdDel;
-  const instance = validate(DeleteTaskDto, req.body);
+taskRouter.delete('/:id', (req: Request, res: Response) => {
+  const { id } = validate(DeleteTaskDto, req.params);
 
-  logger.info(`Удаление задачи по id=${taskIdDel}`);
+  logger.info(`Удаление задачи по id=${id}`);
 
-  res.json({ message: `Вы удаляете задачу с id=${taskIdDel}` });
+  res.json({ message: `Вы удаляете задачу с id=${id}` });
 });
 
 taskRouter.get('/list', (req: Request, res: Response) => {

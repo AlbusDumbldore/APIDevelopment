@@ -1,7 +1,6 @@
-import { IsInt, IsNumber } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class DeleteTaskDto {
-  @IsNumber()
-  @IsInt()
-  Id: number;
+  @IsString()
+  id: string;
 }
