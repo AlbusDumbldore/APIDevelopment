@@ -17,7 +17,7 @@ userController.post('/register', (req: Request, res: Response) => {
 userController.post('/login', (req: Request, res: Response) => {
   const instance = validate(LoginUserDto, req.body);
 
-  logger.info('Процесс аутентификации пользователя');
+  const profile = userService.login(instance);
 
   res.json({ message: 'Вы проходите процесс аутентификации', instance });
 });

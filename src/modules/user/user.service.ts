@@ -20,4 +20,19 @@ export const userService = {
 
     return saved;
   },
+
+  login(dto: Omit<User, 'id'>) {
+    logger.info('Попытка входа');
+
+    const user = userRepository.findByEmail(dto.email);
+    if (!user) {
+      throw Error('Пользователь с таким email не существует');
+    }
+
+    if (user.password === dto.password) {
+      throw Error('Пароль неверный');
+    }
+
+    return user;
+  },
 };
