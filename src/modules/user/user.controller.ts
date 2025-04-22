@@ -2,26 +2,27 @@ import express, { Request, Response } from 'express';
 import logger from '../../logger';
 import { validate } from '../../validation';
 import { LoginUserDto, RegisterUserDto } from './dto';
+import { userService } from './user.service';
 
-export const userRouter = express.Router();
+export const userController = express.Router();
 
-userRouter.post('/register', (req: Request, res: Response) => {
+userController.post('/register', (req: Request, res: Response) => {
   const instance = validate(RegisterUserDto, req.body);
 
-  logger.info('Регистрация нового пользователя');
+  const result = userService.register(instance);
 
-  res.json({ message: 'Вы проходите процесс регистрации', instance });
+  res.json(result);
 });
 
-userRouter.post('/login', (req: Request, res: Response) => {
+userController.post('/login', (req: Request, res: Response) => {
   const instance = validate(LoginUserDto, req.body);
 
-  logger.info('Процесс аутентификации пользователя');
+  const profile = userService.login(instance);
 
   res.json({ message: 'Вы проходите процесс аутентификации', instance });
 });
 
-userRouter.get('/profile', (req: Request, res: Response) => {
+userController.get('/profile', (req: Request, res: Response) => {
   logger.info('Чтение профиля пользователя');
 
   res.json({ message: 'Вы пытаетесь запросить профиль пользователя' });
