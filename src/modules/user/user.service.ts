@@ -1,3 +1,5 @@
+import { BadRequestException, NotFoundException } from '../../exceptions';
+import { UnauthorizedException } from '../../exceptions/unauthorized.exception';
 import logger from '../../logger';
 import { userRepository } from './user.repository';
 import { User } from './user.types';
@@ -8,14 +10,10 @@ export const userService = {
 
     const exists = userRepository.findByEmail(dto.email);
     if (exists) {
-      throw Error('Пользователь с таким email уже существует');
+      throw new BadRequestException('Пользователь с таким email уже существует');
     }
 
-    const success = userRepository.save(dto);
-    if (!success) {
-      throw Error('Регистрация пользователя не удалась!');
-    }
-
+    userRepository.save(dto);
     const saved = userRepository.findByEmail(dto.email);
 
     return saved;
@@ -26,11 +24,11 @@ export const userService = {
 
     const user = userRepository.findByEmail(dto.email);
     if (!user) {
-      throw Error('Пользователь с таким email не существует');
+      throw new NotFoundException('Пользователь с таким email не существует');
     }
 
     if (user.password === dto.password) {
-      throw Error('Пароль неверный');
+      throw new UnauthorizedException('Пароль неверный');
     }
 
     return user;
