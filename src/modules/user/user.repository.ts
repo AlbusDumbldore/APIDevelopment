@@ -1,10 +1,11 @@
+import { nanoid } from 'nanoid';
 import { User } from './user.types';
 
 const storage: User[] = [];
 
 export const userRepository = {
   save(user: Omit<User, 'id'>): boolean {
-    storage.push({ id: '1', ...user });
+    storage.push({ id: nanoid(3), ...user });
 
     return true;
   },
