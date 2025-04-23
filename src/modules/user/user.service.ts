@@ -1,3 +1,4 @@
+import { compareSync, hashSync } from 'bcrypt';
 import { BadRequestException, NotFoundException } from '../../exceptions';
 import { UnauthorizedException } from '../../exceptions/unauthorized.exception';
 import logger from '../../logger';
@@ -13,6 +14,8 @@ export const userService = {
       throw new BadRequestException('Пользователь с таким email уже существует');
     }
 
+    dto.password = hashSync(dto.password, 1);
+
     userRepository.save(dto);
     const saved = userRepository.findByEmail(dto.email);
 
@@ -27,7 +30,7 @@ export const userService = {
       throw new NotFoundException('Пользователь с таким email не существует');
     }
 
-    if (user.password === dto.password) {
+    if (!compareSync(dto.password, user.password)) {
       throw new UnauthorizedException('Пароль неверный');
     }
 
