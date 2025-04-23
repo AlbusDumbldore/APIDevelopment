@@ -2,7 +2,7 @@ import express from 'express';
 import { logRoutes } from './bootstrap';
 import logger from './logger';
 import { errorHandler, logRequestMiddleware } from './middlewares';
-import { taskRouter } from './modules/task/task.controller';
+import { taskController } from './modules/task/task.controller';
 import { userController } from './modules/user/user.controller';
 
 const bootstrap = () => {
@@ -11,7 +11,7 @@ const bootstrap = () => {
   server.use(logRequestMiddleware);
 
   server.use('/user', userController);
-  server.use('/task', taskRouter);
+  server.use('/task', taskController);
 
   server.use(errorHandler);
 
