@@ -1,13 +1,11 @@
 import express, { Request, Response } from 'express';
 import logger from '../../logger';
 import { validate } from '../../validation';
-import { CreateTaskDto } from './dto';
-import { DeleteTaskDto } from './dto/delete-task.dto';
-import { IdTaskDto } from './dto/id-task.dto';
+import { CreateTaskDto, DeleteTaskDto, IdTaskDto } from './dto';
 
-export const taskRouter = express.Router();
+export const taskController = express.Router();
 
-taskRouter.post('/create', (req: Request, res: Response) => {
+taskController.post('/create', (req: Request, res: Response) => {
   const instance = validate(CreateTaskDto, req.body);
 
   logger.info('Создание новой задачи');
@@ -15,7 +13,7 @@ taskRouter.post('/create', (req: Request, res: Response) => {
   res.json({ message: 'Создание задачи' });
 });
 
-taskRouter.get('/:taskId', (req: Request, res: Response) => {
+taskController.get('/:taskId', (req: Request, res: Response) => {
   const taskId = req.params.taskId;
   const instance = validate(IdTaskDto, req.body);
 
@@ -24,7 +22,7 @@ taskRouter.get('/:taskId', (req: Request, res: Response) => {
   res.json({ message: `Вы пытаетесь запросить задачу с id=${taskId}` });
 });
 
-taskRouter.delete('/:id', (req: Request, res: Response) => {
+taskController.delete('/:id', (req: Request, res: Response) => {
   const { id } = validate(DeleteTaskDto, req.params);
 
   logger.info(`Удаление задачи по id=${id}`);
@@ -32,7 +30,7 @@ taskRouter.delete('/:id', (req: Request, res: Response) => {
   res.json({ message: `Вы удаляете задачу с id=${id}` });
 });
 
-taskRouter.get('/list', (req: Request, res: Response) => {
+taskController.get('/list', (req: Request, res: Response) => {
   logger.info('Чтение списка задач');
 
   res.json({ message: 'Вы пытаетесь запросить список задач' });
