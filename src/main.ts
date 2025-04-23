@@ -2,7 +2,7 @@ import express from 'express';
 import { logRoutes } from './bootstrap';
 import logger from './logger';
 import { errorHandler, logRequestMiddleware } from './middlewares';
-import { taskRouter } from './modules/task/task.router';
+import { taskRouter } from './modules/task/task.controller';
 import { userController } from './modules/user/user.controller';
 
 const bootstrap = () => {
