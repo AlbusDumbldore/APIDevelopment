@@ -1,37 +1,36 @@
 import express, { Request, Response } from 'express';
-import logger from '../../logger';
+import { IdStringDto } from '../../common';
 import { validate } from '../../validation';
-import { CreateTaskDto, DeleteTaskDto, IdTaskDto } from './dto';
+import { CreateTaskDto } from './dto';
+import { taskService } from './task.service';
 
 export const taskController = express.Router();
 
-taskController.post('/create', (req: Request, res: Response) => {
-  const instance = validate(CreateTaskDto, req.body);
+taskController.post('', (req: Request, res: Response) => {
+  const dto = validate(CreateTaskDto, req.body);
+  const result = taskService.create(dto);
 
-  logger.info('Создание новой задачи');
-
-  res.json({ message: 'Создание задачи' });
+  res.json(result);
 });
 
-taskController.get('/:taskId', (req: Request, res: Response) => {
-  const taskId = req.params.taskId;
-  const instance = validate(IdTaskDto, req.body);
+taskController.get('', (req: Request, res: Response) => {
+  const result = taskService.getAll();
 
-  logger.info(`Чтение задачи по id=${taskId}`);
-
-  res.json({ message: `Вы пытаетесь запросить задачу с id=${taskId}` });
+  res.json(result);
 });
 
 taskController.delete('/:id', (req: Request, res: Response) => {
-  const { id } = validate(DeleteTaskDto, req.params);
+  const id = req.params.id;
 
-  logger.info(`Удаление задачи по id=${id}`);
+  const result = taskService.delete(id);
 
-  res.json({ message: `Вы удаляете задачу с id=${id}` });
+  res.json(result);
 });
 
-taskController.get('/list', (req: Request, res: Response) => {
-  logger.info('Чтение списка задач');
+taskController.get('/:id', (req: Request, res: Response) => {
+  const { id } = validate(IdStringDto, req.params);
 
-  res.json({ message: 'Вы пытаетесь запросить список задач' });
+  const result = taskService.getOneById(id);
+
+  res.json(result);
 });
