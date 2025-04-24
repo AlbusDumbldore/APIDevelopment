@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { PaginationDto } from '../../common';
 import { Task } from './task.types';
 
 const storage: Task[] = [];
@@ -14,5 +15,12 @@ export const taskRepository = {
 
   findOneById(id: string): Task | null {
     return storage.find((task) => task.id === id) ?? null;
+  },
+
+  findAll(query: PaginationDto) {
+    return {
+      total: storage.length,
+      data: storage.slice(query.offset, query.offset + query.limit),
+    };
   },
 };

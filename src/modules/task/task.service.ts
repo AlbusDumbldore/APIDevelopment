@@ -1,3 +1,4 @@
+import { PaginationDto } from '../../common';
 import { NotFoundException } from '../../exceptions';
 import logger from '../../logger';
 import { taskRepository } from './task.repository';
@@ -12,10 +13,12 @@ export const taskService = {
     return { id };
   },
 
-  getAll() {
+  getAll(query: PaginationDto) {
     logger.info('Чтение списка задач');
 
-    return { message: 'Вы пытаетесь запросить список задач' };
+    const tasks = taskRepository.findAll(query);
+
+    return tasks;
   },
 
   getOneById(id: string) {

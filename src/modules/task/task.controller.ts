@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { IdStringDto } from '../../common';
 import { validate } from '../../validation';
 import { CreateTaskDto } from './dto';
+import { FindAllTaskDto } from './dto/find-all-task.dto';
 import { taskService } from './task.service';
 
 export const taskController = express.Router();
@@ -14,7 +15,8 @@ taskController.post('', (req: Request, res: Response) => {
 });
 
 taskController.get('', (req: Request, res: Response) => {
-  const result = taskService.getAll();
+  const dto = validate(FindAllTaskDto, req.query);
+  const result = taskService.getAll(dto);
 
   res.json(result);
 });
