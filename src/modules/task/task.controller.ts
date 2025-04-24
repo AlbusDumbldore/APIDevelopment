@@ -1,38 +1,56 @@
-import express, { Request, Response } from 'express';
-import { IdStringDto } from '../../common';
+import { Request, Response } from 'express';
+import { BaseController, IdStringDto } from '../../common';
 import { validate } from '../../validation';
+import { Route } from '../../validation/app.types';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskDto } from './dto/find-all-task.dto';
-import { taskService } from './task.service';
+import { TaskService } from './task.service';
 
-export const taskController = express.Router();
+export class TaskController extends BaseController {
+  constructor(private readonly service: TaskService) {
+    super();
 
-taskController.post('', (req: Request, res: Response) => {
-  const dto = validate(CreateTaskDto, req.body);
-  const result = taskService.create(dto);
+    this.initRoutes();
+  }
 
-  res.json(result);
-});
+  initRoutes() {
+    const routes: Route[] = [
+      { path: '/', method: 'post', handler: this.create },
+      { path: '/', handler: this.getAll },
+      { path: '/:id', handler: this.getOneById },
+      { path: '/:id', method: 'delete', handler: this.delete },
+    ];
 
-taskController.get('', (req: Request, res: Response) => {
-  const dto = validate(FindAllTaskDto, req.query);
-  const result = taskService.getAll(dto);
+    this.addRoutes(routes);
+  }
 
-  res.json(result);
-});
+  create(req: Request, res: Response) {
+    const dto = validate(CreateTaskDto, req.body);
+    const result = this.service.create(dto);
 
-taskController.delete('/:id', (req: Request, res: Response) => {
-  const id = req.params.id;
+    res.json(result);
+  }
 
-  const result = taskService.delete(id);
+  getAll(req: Request, res: Response) {
+    const dto = validate(FindAllTaskDto, req.query);
+    const result = this.service.getAll(dto);
 
-  res.json(result);
-});
+    res.json(result);
+  }
 
-taskController.get('/:id', (req: Request, res: Response) => {
-  const { id } = validate(IdStringDto, req.params);
+  delete(req: Request, res: Response) {
+    const id = req.params.id;
 
-  const result = taskService.getOneById(id);
+    const result = this.service.delete(id);
 
-  res.json(result);
-});
+    res.json(result);
+  }
+
+  getOneById(req: Request, res: Response) {
+    const { id } = validate(IdStringDto, req.params);
+
+    const result = this.service.getOneById(id);
+
+    res.json(result);
+  }
+}

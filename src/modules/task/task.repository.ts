@@ -4,18 +4,18 @@ import { Task } from './task.types';
 
 const storage: Task[] = [];
 
-export const taskRepository = {
+export class TaskRepository {
   create(task: Omit<Task, 'id'>): string {
     const id = nanoid(3);
 
     storage.push({ id, ...task });
 
     return id;
-  },
+  }
 
   findOneById(id: string): Task | null {
     return storage.find((task) => task.id === id) ?? null;
-  },
+  }
 
   findAll(query: FindAllTaskDto) {
     const tasks = storage.filter((task) => {
@@ -29,5 +29,5 @@ export const taskRepository = {
       total: tasks.length,
       data: tasks.slice(query.offset, query.offset + query.limit),
     };
-  },
-};
+  }
+}
