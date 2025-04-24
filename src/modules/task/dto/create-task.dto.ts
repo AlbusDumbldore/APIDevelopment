@@ -1,10 +1,9 @@
 import { IsString, MaxLength } from 'class-validator';
 
 enum Importance {
-  importance1 = 'Важная и срочная',
-  importance2 = 'Важная, но несрочная',
-  importance3 = 'Срочная, но неважная',
-  importance4 = 'Навжная и несрочная',
+  importance1 = 'Низкая',
+  importance2 = 'Средняя',
+  importance3 = 'Высокая',
 }
 
 enum Status {
