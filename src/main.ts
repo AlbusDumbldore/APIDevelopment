@@ -1,13 +1,11 @@
-import { config } from 'dotenv';
+import 'reflect-metadata';
 import express from 'express';
-import * as process from 'node:process';
 import { logRoutes } from './bootstrap';
+import { appConfig } from './config';
 import logger from './logger';
 import { errorHandler, logRequestMiddleware } from './middlewares';
 import { taskController } from './modules/task/task.controller';
 import { userController } from './modules/user/user.controller';
-
-config();
 
 const bootstrap = () => {
   const server = express(); // http://localhost:2000
@@ -21,9 +19,8 @@ const bootstrap = () => {
 
   logRoutes(server);
 
-  const port = Number(process.env.PORT);
-  server.listen(port, () => {
-    logger.info(`Listening on port ${port}`);
+  server.listen(appConfig.port, () => {
+    logger.info(`Listening on port ${appConfig.port}`);
   });
 };
 
