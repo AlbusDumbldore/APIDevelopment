@@ -1,29 +1,46 @@
-import express, { Request, Response } from 'express';
+import { Request, Response } from 'express';
+import { BaseController } from '../../common';
 import logger from '../../logger';
 import { validate } from '../../validation';
+import { Route } from '../../validation/app.types';
 import { LoginUserDto, RegisterUserDto } from './dto';
-import { userService } from './user.service';
+import { UserService } from './user.service';
 
-export const userController = express.Router();
+export class UserController extends BaseController {
+  constructor(private readonly service: UserService) {
+    super();
 
-userController.post('/register', (req: Request, res: Response) => {
-  const instance = validate(RegisterUserDto, req.body);
+    this.initRoutes();
+  }
+  initRoutes() {
+    const routes: Route[] = [
+      { path: '/profile', handler: this.profile },
+      { path: '/register', handler: this.register },
+      { path: '/login', handler: this.login },
+    ];
 
-  const result = userService.register(instance);
+    this.addRoutes(routes);
+  }
 
-  res.json(result);
-});
+  profile(req: Request, res: Response) {
+    logger.info('Чтение профиля');
 
-userController.post('/login', (req: Request, res: Response) => {
-  const instance = validate(LoginUserDto, req.body);
+    res.json({ message: 'Вы пытаетесь запросить профиль' });
+  }
 
-  const profile = userService.login(instance);
+  register(req: Request, res: Response) {
+    const instance = validate(RegisterUserDto, req.body);
 
-  res.json({ message: 'Вы проходите процесс аутентификации', instance });
-});
+    const result = this.service.register(instance);
 
-userController.get('/profile', (req: Request, res: Response) => {
-  logger.info('Чтение профиля пользователя');
+    res.json(result);
+  }
 
-  res.json({ message: 'Вы пытаетесь запросить профиль пользователя' });
-});
+  login(req: Request, res: Response) {
+    const instance = validate(LoginUserDto, req.body);
+
+    const profile = this.service.login(instance);
+
+    res.json({ message: 'Вы проходите процесс аутентификации', instance });
+  }
+}

@@ -5,14 +5,14 @@ import { appConfig } from './config';
 import logger from './logger';
 import { errorHandler, logRequestMiddleware } from './middlewares';
 import { taskController } from './modules/task/task.controller';
-import { userController } from './modules/user/user.controller';
+import { userController } from './modules/user/user.module';
 
 const bootstrap = () => {
   const server = express(); // http://localhost:2000
   server.use(express.json());
   server.use(logRequestMiddleware);
 
-  server.use('/user', userController);
+  server.use('/user', userController.router);
   server.use('/task', taskController);
 
   server.use(errorHandler);
