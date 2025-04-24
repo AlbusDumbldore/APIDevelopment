@@ -1,6 +1,6 @@
-import { PaginationDto } from '../../common';
 import { NotFoundException } from '../../exceptions';
 import logger from '../../logger';
+import { FindAllTaskDto } from './dto/find-all-task.dto';
 import { taskRepository } from './task.repository';
 import { Task } from './task.types';
 
@@ -13,7 +13,7 @@ export const taskService = {
     return { id };
   },
 
-  getAll(query: PaginationDto) {
+  getAll(query: FindAllTaskDto) {
     logger.info('Чтение списка задач');
 
     const tasks = taskRepository.findAll(query);

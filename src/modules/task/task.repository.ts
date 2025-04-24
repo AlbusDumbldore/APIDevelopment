@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { PaginationDto } from '../../common';
+import { FindAllTaskDto } from './dto/find-all-task.dto';
 import { Task } from './task.types';
 
 const storage: Task[] = [];
@@ -17,10 +17,17 @@ export const taskRepository = {
     return storage.find((task) => task.id === id) ?? null;
   },
 
-  findAll(query: PaginationDto) {
+  findAll(query: FindAllTaskDto) {
+    const tasks = storage.filter((task) => {
+      if (query.search) {
+        return task.title.includes(query.search) || task.description.includes(query.search);
+      }
+      return true;
+    });
+
     return {
-      total: storage.length,
-      data: storage.slice(query.offset, query.offset + query.limit),
+      total: tasks.length,
+      data: tasks.slice(query.offset, query.offset + query.limit),
     };
   },
 };
