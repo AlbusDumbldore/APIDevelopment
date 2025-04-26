@@ -3,14 +3,14 @@ import { User } from './user.types';
 
 const storage: User[] = [];
 
-export const userRepository = {
+export class UserRepository {
   save(user: Omit<User, 'id'>): boolean {
     storage.push({ id: nanoid(3), ...user });
 
     return true;
-  },
+  }
 
   findByEmail(email: User['email']): User | null {
     return storage.find((user) => user.email === email) ?? null;
-  },
-};
+  }
+}
