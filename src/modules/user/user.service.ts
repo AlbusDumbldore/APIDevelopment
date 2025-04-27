@@ -16,7 +16,7 @@ export class UserService {
       throw new BadRequestException('Пользователь с таким email уже существует');
     }
 
-    dto.password = hashSync(dto.password, 1);
+    dto.password = hashSync(dto.password, 4);
 
     this.repository.save(dto);
     const saved = this.repository.findByEmail(dto.email);
