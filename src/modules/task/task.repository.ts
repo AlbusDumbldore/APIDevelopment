@@ -5,12 +5,13 @@ import { Task } from './task.types';
 const storage: Task[] = [];
 
 export class TaskRepository {
-  create(task: Omit<Task, 'id'>): string {
+  create(task: Omit<Task, 'id'>): Task {
     const id = nanoid(3);
+    const createdTask = { id, ...task };
 
-    storage.push({ id, ...task });
+    storage.push(createdTask);
 
-    return id;
+    return createdTask;
   }
 
   findOneById(id: string): Task | null {
