@@ -39,7 +39,7 @@ export class TaskController extends BaseController {
   }
 
   delete(req: Request, res: Response) {
-    const id = req.params.id;
+    const { id } = validate(IdStringDto, req.params.id);
 
     const result = this.service.delete(id);
 

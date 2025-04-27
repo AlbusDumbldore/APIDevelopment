@@ -15,8 +15,8 @@ export class UserController extends BaseController {
   initRoutes() {
     const routes: Route[] = [
       { path: '/profile', handler: this.profile },
-      { path: '/register', handler: this.register },
-      { path: '/login', handler: this.login },
+      { path: '/register', method: 'post', handler: this.register },
+      { path: '/login', method: 'post', handler: this.login },
     ];
 
     this.addRoutes(routes);
