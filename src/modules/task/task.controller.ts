@@ -30,7 +30,7 @@ export class TaskController extends BaseController {
       throw new UnauthorizedException();
     }
     const dto = validate(CreateTaskDto, req.body);
-    const result = this.service.create(dto);
+    const result = this.service.create({ ...dto, authorId: req.session.userId });
 
     res.json(result);
   }

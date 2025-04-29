@@ -11,7 +11,6 @@ export class TaskService {
     logger.info(`Создание задачи`);
 
     const id = this.repository.create(task);
-    const authorId = this.repository.create(task);
 
     return { id };
   }
