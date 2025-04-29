@@ -1,4 +1,4 @@
-import { NotFoundException } from '../../exceptions';
+import { ForbiddenException, NotFoundException } from '../../exceptions';
 import logger from '../../logger';
 import { FindAllTaskDto } from './dto/find-all-task.dto';
 import { TaskRepository } from './task.repository';
@@ -36,10 +36,10 @@ export class TaskService {
 
   delete(id: string, userId: string) {
     logger.info(`Удаление задачи по id=${id}`);
-    const task = this.repository.findOneById(id);
-    // if (task.autorId !== userId) {
-    //   throw new ForbiddenException();
-    // }
+    const task = this.getOneById(id);
+    if (task.authorId !== userId) {
+      throw new ForbiddenException();
+    }
 
     return { message: `Вы удаляете задачу с id=${id}`, id };
   }
