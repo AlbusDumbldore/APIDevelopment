@@ -29,6 +29,8 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('Пользователь с таким id не существует');
     }
+
+    return user;
   }
 
   login(dto: Omit<User, 'id'>) {
