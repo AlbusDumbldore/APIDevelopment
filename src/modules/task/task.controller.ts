@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { BaseController, IdStringDto } from '../../common';
+import { UnauthorizedException } from '../../exceptions/unauthorized.exception';
 import { validate } from '../../validation';
 import { Route } from '../../validation/app.types';
 import { CreateTaskDto } from './dto';
@@ -25,6 +26,9 @@ export class TaskController extends BaseController {
   }
 
   create(req: Request, res: Response) {
+    if (!req.session.userId) {
+      throw new UnauthorizedException();
+    }
     const dto = validate(CreateTaskDto, req.body);
     const result = this.service.create(dto);
 
@@ -39,9 +43,12 @@ export class TaskController extends BaseController {
   }
 
   delete(req: Request, res: Response) {
+    if (!req.session.userId) {
+      throw new UnauthorizedException();
+    }
     const { id } = validate(IdStringDto, req.params.id);
 
-    const result = this.service.delete(id);
+    const result = this.service.delete(id, req.session.userId);
 
     res.json(result);
   }

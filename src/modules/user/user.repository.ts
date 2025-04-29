@@ -13,4 +13,8 @@ export class UserRepository {
   findByEmail(email: User['email']): User | null {
     return storage.find((user) => user.email === email) ?? null;
   }
+
+  findById(id: User['id']): User | null {
+    return storage.find((user) => user.id === id) ?? null;
+  }
 }

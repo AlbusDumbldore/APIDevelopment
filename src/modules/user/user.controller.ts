@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { BaseController } from '../../common';
+import { UnauthorizedException } from '../../exceptions/unauthorized.exception';
 import logger from '../../logger';
 import { validate } from '../../validation';
 import { Route } from '../../validation/app.types';
@@ -25,7 +26,14 @@ export class UserController extends BaseController {
   profile(req: Request, res: Response) {
     logger.info('Чтение профиля');
 
-    res.json({ message: 'Вы пытаетесь запросить профиль' });
+    const userId = req.session.userId;
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+
+    const user = this.service.findOneById(userId);
+
+    res.json(user);
   }
 
   register(req: Request, res: Response) {
@@ -40,6 +48,8 @@ export class UserController extends BaseController {
     const instance = validate(LoginUserDto, req.body);
 
     const profile = this.service.login(instance);
+
+    req.session.userId = profile.id;
 
     res.json({ message: 'Вы проходите процесс аутентификации', instance });
   }

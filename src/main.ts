@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import express from 'express';
+import expressSession from 'express-session';
 import { logRoutes } from './bootstrap';
 import { appConfig } from './config';
 import logger from './logger';
@@ -7,8 +8,26 @@ import { errorHandler, logRequestMiddleware } from './middlewares';
 import { taskController } from './modules/task/task.module';
 import { userController } from './modules/user/user.module';
 
+declare module 'express-session' {
+  interface SessionData {
+    userId: string;
+  }
+}
+
+const server = express();
+
 const bootstrap = () => {
   const server = express(); // http://localhost:2000
+
+  server.use(
+    expressSession({
+      secret: 'my_secret',
+      resave: false,
+      saveUninitialized: false,
+      name: 'session_id',
+    }),
+  );
+
   server.use(express.json());
   server.use(logRequestMiddleware);
 

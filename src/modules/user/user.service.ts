@@ -24,6 +24,13 @@ export class UserService {
     return saved;
   }
 
+  findOneById(userId: string) {
+    const user = this.repository.findById(userId);
+    if (!user) {
+      throw new NotFoundException('Пользователь с таким id не существует');
+    }
+  }
+
   login(dto: Omit<User, 'id'>) {
     logger.info('Попытка входа');
 

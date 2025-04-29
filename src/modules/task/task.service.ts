@@ -11,6 +11,7 @@ export class TaskService {
     logger.info(`Создание задачи`);
 
     const id = this.repository.create(task);
+    const authorId = this.repository.create(task);
 
     return { id };
   }
@@ -34,8 +35,12 @@ export class TaskService {
     return task;
   }
 
-  delete(id: string) {
+  delete(id: string, userId: string) {
     logger.info(`Удаление задачи по id=${id}`);
+    const task = this.repository.findOneById(id);
+    // if (task.autorId !== userId) {
+    //   throw new ForbiddenException();
+    // }
 
     return { message: `Вы удаляете задачу с id=${id}`, id };
   }
