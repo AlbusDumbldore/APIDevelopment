@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { BaseController } from '../../common';
-import { UnauthorizedException } from '../../exceptions/unauthorized.exception';
+import { UnauthorizedException } from '../../exceptions';
 import logger from '../../logger';
 import { validate } from '../../validation';
 import { Route } from '../../validation/app.types';

@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { BadRequestException, NotFoundException } from '../exceptions';
-import { UnauthorizedException } from '../exceptions/unauthorized.exception';
+import { BadRequestException, NotFoundException, UnauthorizedException } from '../exceptions';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {

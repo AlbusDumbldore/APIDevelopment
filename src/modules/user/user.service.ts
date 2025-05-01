@@ -1,6 +1,5 @@
 import { compareSync, hashSync } from 'bcrypt';
-import { BadRequestException, NotFoundException } from '../../exceptions';
-import { UnauthorizedException } from '../../exceptions/unauthorized.exception';
+import { BadRequestException, NotFoundException, UnauthorizedException } from '../../exceptions';
 import logger from '../../logger';
 import { UserRepository } from './user.repository';
 import { User } from './user.types';
