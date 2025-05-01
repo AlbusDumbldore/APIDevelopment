@@ -1,11 +1,5 @@
-import { Type } from 'class-transformer';
-import { IsNumber, IsString } from 'class-validator';
-
-export class AppConfigDto {
-  @IsNumber()
-  @Type(() => Number)
-  port: number;
-}
+import { plainToInstance, Transform, Type } from 'class-transformer';
+import { IsNumber, IsString, ValidateNested } from 'class-validator';
 
 export class ConfigSequelize {
   @IsNumber()
@@ -23,4 +17,14 @@ export class ConfigSequelize {
 
   @IsString()
   password: string;
+}
+
+export class AppConfigDto {
+  @IsNumber()
+  @Type(() => Number)
+  port: number;
+
+  @ValidateNested()
+  @Transform(({ value }) => plainToInstance(ConfigSequelize, value))
+  postgres: ConfigSequelize;
 }

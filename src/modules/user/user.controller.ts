@@ -51,6 +51,6 @@ export class UserController extends BaseController {
 
     req.session.userId = profile.id;
 
-    res.json({ message: 'Вы проходите процесс аутентификации', instance });
+    res.json(profile);
   }
 }

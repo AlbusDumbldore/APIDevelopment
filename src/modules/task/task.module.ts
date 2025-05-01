@@ -1,7 +1,5 @@
 import { TaskController } from './task.controller';
-import { TaskRepository } from './task.repository';
 import { TaskService } from './task.service';
 
-const repository = new TaskRepository();
-const service = new TaskService(repository);
+const service = new TaskService();
 export const taskController = new TaskController(service);

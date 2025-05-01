@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { BaseController, IdStringDto } from '../../common';
+import { BaseController, IdNumberDto } from '../../common';
+import { UnauthorizedException } from '../../exceptions';
 import { validate } from '../../validation';
 import { Route } from '../../validation/app.types';
 import { CreateTaskDto } from './dto';
@@ -26,8 +27,12 @@ export class TaskController extends BaseController {
 
   async create(req: Request, res: Response) {
     const dto = validate(CreateTaskDto, req.body);
-    // @ts-ignore
-    const result = await this.service.create(dto);
+
+    const authorId = req.session.userId;
+    if (!authorId) {
+      throw new UnauthorizedException();
+    }
+    const result = await this.service.create(dto, authorId);
 
     res.json(result);
   }
@@ -40,16 +45,19 @@ export class TaskController extends BaseController {
   }
 
   async delete(req: Request, res: Response) {
-    const id = req.params.id;
+    const { id } = validate(IdNumberDto, req.params.id);
 
-    // @ts-ignore
-    const result = await this.service.delete(id);
+    const userId = req.session.userId;
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+    const result = await this.service.delete(id, userId);
 
     res.json(result);
   }
 
   async getOneById(req: Request, res: Response) {
-    const { id } = validate(IdStringDto, req.params);
+    const { id } = validate(IdNumberDto, req.params);
 
     const result = await this.service.getOneById(id);
 

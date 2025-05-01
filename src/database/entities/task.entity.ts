@@ -1,6 +1,5 @@
 import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
-// @ts-ignore
-import { UserModel } from './user.model';
+import { UserEntity } from './user.entity';
 
 @Table({ tableName: 'tasks' })
 export class TaskEntity extends Model {
@@ -24,17 +23,17 @@ export class TaskEntity extends Model {
   @Column({ type: DataType.STRING, allowNull: false })
   public status: string;
 
-  @ForeignKey(() => UserModel)
+  @ForeignKey(() => UserEntity)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
   public authorId: number;
 
-  @BelongsTo(() => UserModel, {
+  @BelongsTo(() => UserEntity, {
     as: 'author',
     foreignKey: 'authorId',
     onDelete: 'CASCADE',
   })
-  public author: UserModel;
+  public author: UserEntity;
 }

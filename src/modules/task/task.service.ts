@@ -6,13 +6,12 @@ import { CreateTaskDto } from './dto';
 import { FindAllTaskDto } from './dto/find-all-task.dto';
 
 export class TaskService {
-  async create(task: CreateTaskDto[]) {
+  async create(task: CreateTaskDto, authorId: UserEntity['id']): Promise<TaskEntity> {
     logger.info(`Создание задачи`);
 
-    // @ts-ignore
-    const id = await TaskEntity.create(task);
+    const created = await TaskEntity.create({ ...task, authorId });
 
-    return { id };
+    return created;
   }
 
   async getAll(query: FindAllTaskDto) {
@@ -23,7 +22,7 @@ export class TaskService {
     return tasks;
   }
 
-  async getOneById(id: string) {
+  async getOneById(id: TaskEntity['id']) {
     logger.info(`Чтение задачи по id=${id}`);
 
     const task = await TaskEntity.findByPk(id);
@@ -34,12 +33,14 @@ export class TaskService {
     return task;
   }
 
-  async delete(id: string, userId: UserEntity['id']) {
+  async delete(id: TaskEntity['id'], userId: UserEntity['id']) {
     logger.info(`Удаление задачи по id=${id}`);
-    const task = await this.getOneById(id);
-    if (task.authorId !== userId) {
+    const task = await TaskEntity.findByPk(id);
+    if (task?.authorId !== userId) {
       throw new ForbiddenException();
     }
+
+    await TaskEntity.destroy({ where: { id: task.id } });
 
     return { message: `Вы удаляете задачу с id=${id}`, id };
   }
