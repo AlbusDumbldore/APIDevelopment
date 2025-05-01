@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { BaseController } from '../../common';
+import { UnauthorizedException } from '../../exceptions';
 import logger from '../../logger';
 import { validate } from '../../validation';
 import { Route } from '../../validation/app.types';
@@ -15,32 +16,41 @@ export class UserController extends BaseController {
   initRoutes() {
     const routes: Route[] = [
       { path: '/profile', handler: this.profile },
-      { path: '/register', handler: this.register },
-      { path: '/login', handler: this.login },
+      { path: '/register', method: 'post', handler: this.register },
+      { path: '/login', method: 'post', handler: this.login },
     ];
 
     this.addRoutes(routes);
   }
 
-  profile(req: Request, res: Response) {
+  async profile(req: Request, res: Response) {
     logger.info('Чтение профиля');
 
-    res.json({ message: 'Вы пытаетесь запросить профиль' });
+    const userId = req.session.userId;
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+
+    const user = this.service.findOneById(userId);
+
+    res.json(user);
   }
 
-  register(req: Request, res: Response) {
+  async register(req: Request, res: Response) {
     const instance = validate(RegisterUserDto, req.body);
 
-    const result = this.service.register(instance);
+    const result = await this.service.register(instance);
 
     res.json(result);
   }
 
-  login(req: Request, res: Response) {
+  async login(req: Request, res: Response) {
     const instance = validate(LoginUserDto, req.body);
 
-    const profile = this.service.login(instance);
+    const profile = await this.service.login(instance);
 
-    res.json({ message: 'Вы проходите процесс аутентификации', instance });
+    req.session.userId = profile.id;
+
+    res.json(profile);
   }
 }

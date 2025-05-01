@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import * as process from 'node:process';
 import { validate } from '../validation';
 import { AppConfigDto } from './app-config.dto';
 
@@ -10,6 +11,13 @@ type EnvStructure<T> = {
 
 const rawConfig: EnvStructure<AppConfigDto> = {
   port: process.env.PORT,
+  postgres: {
+    port: process.env.POSTGRESQL_PORT,
+    host: process.env.POSTGRESQL_HOST,
+    database: process.env.POSTGRESQL_DATABASE,
+    password: process.env.POSTGRESQL_PASSWORD,
+    username: process.env.POSTGRESQL_USERNAME,
+  },
 };
 
 export const appConfig = validate(AppConfigDto, rawConfig);

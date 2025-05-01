@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { BaseController, IdStringDto } from '../../common';
+import { BaseController, IdNumberDto } from '../../common';
+import { UnauthorizedException } from '../../exceptions';
 import { validate } from '../../validation';
 import { Route } from '../../validation/app.types';
 import { CreateTaskDto } from './dto';
@@ -24,32 +25,41 @@ export class TaskController extends BaseController {
     this.addRoutes(routes);
   }
 
-  create(req: Request, res: Response) {
+  async create(req: Request, res: Response) {
     const dto = validate(CreateTaskDto, req.body);
-    const result = this.service.create(dto);
+
+    const authorId = req.session.userId;
+    if (!authorId) {
+      throw new UnauthorizedException();
+    }
+    const result = await this.service.create(dto, authorId);
 
     res.json(result);
   }
 
-  getAll(req: Request, res: Response) {
+  async getAll(req: Request, res: Response) {
     const dto = validate(FindAllTaskDto, req.query);
-    const result = this.service.getAll(dto);
+    const result = await this.service.getAll(dto);
 
     res.json(result);
   }
 
-  delete(req: Request, res: Response) {
-    const id = req.params.id;
+  async delete(req: Request, res: Response) {
+    const { id } = validate(IdNumberDto, req.params.id);
 
-    const result = this.service.delete(id);
+    const userId = req.session.userId;
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+    const result = await this.service.delete(id, userId);
 
     res.json(result);
   }
 
-  getOneById(req: Request, res: Response) {
-    const { id } = validate(IdStringDto, req.params);
+  async getOneById(req: Request, res: Response) {
+    const { id } = validate(IdNumberDto, req.params);
 
-    const result = this.service.getOneById(id);
+    const result = await this.service.getOneById(id);
 
     res.json(result);
   }

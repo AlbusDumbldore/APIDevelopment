@@ -1,32 +1,31 @@
-import { NotFoundException } from '../../exceptions';
+import { TaskEntity } from '../../database/entities/task.entity';
+import { UserEntity } from '../../database/entities/user.entity';
+import { ForbiddenException, NotFoundException } from '../../exceptions';
 import logger from '../../logger';
+import { CreateTaskDto } from './dto';
 import { FindAllTaskDto } from './dto/find-all-task.dto';
-import { TaskRepository } from './task.repository';
-import { Task } from './task.types';
 
 export class TaskService {
-  constructor(private repository: TaskRepository) {}
-
-  create(task: Omit<Task, 'id'>) {
+  async create(task: CreateTaskDto, authorId: UserEntity['id']): Promise<TaskEntity> {
     logger.info(`Создание задачи`);
 
-    const id = this.repository.create(task);
+    const created = await TaskEntity.create({ ...task, authorId });
 
-    return { id };
+    return created;
   }
 
-  getAll(query: FindAllTaskDto) {
+  async getAll(query: FindAllTaskDto) {
     logger.info('Чтение списка задач');
 
-    const tasks = this.repository.findAll(query);
+    const tasks = await TaskEntity.findAll(query);
 
     return tasks;
   }
 
-  getOneById(id: string) {
+  async getOneById(id: TaskEntity['id']) {
     logger.info(`Чтение задачи по id=${id}`);
 
-    const task = this.repository.findOneById(id);
+    const task = await TaskEntity.findByPk(id);
     if (!task) {
       throw new NotFoundException(`Задача с id=${id} не найдена.`);
     }
@@ -34,8 +33,14 @@ export class TaskService {
     return task;
   }
 
-  delete(id: string) {
+  async delete(id: TaskEntity['id'], userId: UserEntity['id']) {
     logger.info(`Удаление задачи по id=${id}`);
+    const task = await TaskEntity.findByPk(id);
+    if (task?.authorId !== userId) {
+      throw new ForbiddenException();
+    }
+
+    await TaskEntity.destroy({ where: { id: task.id } });
 
     return { message: `Вы удаляете задачу с id=${id}`, id };
   }

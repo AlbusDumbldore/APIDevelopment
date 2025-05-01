@@ -1,15 +1,15 @@
-import { IsString, MaxLength } from 'class-validator';
+import { IsEnum, IsString, MaxLength } from 'class-validator';
 
 enum Importance {
-  importance1 = 'Низкая',
-  importance2 = 'Средняя',
-  importance3 = 'Высокая',
+  low = 'low',
+  medium = 'medium',
+  high = 'high',
 }
 
 enum Status {
-  status1 = 'Создано',
-  status2 = 'В работе',
-  status3 = 'Выполнено',
+  created = 'created',
+  progress = 'progress',
+  done = 'done',
 }
 
 export class CreateTaskDto {
@@ -21,10 +21,9 @@ export class CreateTaskDto {
   @MaxLength(100)
   description: string;
 
-  @IsString()
+  @IsEnum(Importance)
   importance: Importance;
 
-  @IsString()
+  @IsEnum(Status)
   status: Status;
 }
-// вынести в отдельную ветки создание  слоев для тасков + исправить несостыковки в контроллере
