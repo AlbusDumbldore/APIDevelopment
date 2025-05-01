@@ -4,5 +4,5 @@ export type Task = {
   description: string;
   importance: string;
   status: string;
-  authorId: string;
+  authorId: number;
 };
