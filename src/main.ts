@@ -12,7 +12,7 @@ import { userController } from './modules/user/user.module';
 
 declare module 'express-session' {
   interface SessionData {
-    userId: string;
+    userId: number;
   }
 }
 

@@ -23,7 +23,7 @@ export class UserController extends BaseController {
     this.addRoutes(routes);
   }
 
-  profile(req: Request, res: Response) {
+  async profile(req: Request, res: Response) {
     logger.info('Чтение профиля');
 
     const userId = req.session.userId;
@@ -36,18 +36,18 @@ export class UserController extends BaseController {
     res.json(user);
   }
 
-  register(req: Request, res: Response) {
+  async register(req: Request, res: Response) {
     const instance = validate(RegisterUserDto, req.body);
 
-    const result = this.service.register(instance);
+    const result = await this.service.register(instance);
 
     res.json(result);
   }
 
-  login(req: Request, res: Response) {
+  async login(req: Request, res: Response) {
     const instance = validate(LoginUserDto, req.body);
 
-    const profile = this.service.login(instance);
+    const profile = await this.service.login(instance);
 
     req.session.userId = profile.id;
 
