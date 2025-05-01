@@ -1,8 +1,10 @@
 import 'reflect-metadata';
+import 'express-async-errors';
 import express from 'express';
 import expressSession from 'express-session';
 import { logRoutes } from './bootstrap';
 import { appConfig } from './config';
+import { connect } from './database/connect';
 import logger from './logger';
 import { errorHandler, logRequestMiddleware } from './middlewares';
 import { taskController } from './modules/task/task.module';
@@ -16,7 +18,9 @@ declare module 'express-session' {
 
 const server = express();
 
-const bootstrap = () => {
+const bootstrap = async () => {
+  await connect();
+
   const server = express(); // http://localhost:2000
 
   server.use(
