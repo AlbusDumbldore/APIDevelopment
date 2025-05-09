@@ -36,4 +36,18 @@ export class TaskEntity extends Model {
     onDelete: 'CASCADE',
   })
   public author: UserEntity;
+
+  @ForeignKey(() => UserEntity)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  public assigneeId: number;
+
+  @BelongsTo(() => UserEntity, {
+    as: 'author',
+    foreignKey: 'authorId',
+    onDelete: 'CASCADE',
+  })
+  public assignee: UserEntity;
 }
