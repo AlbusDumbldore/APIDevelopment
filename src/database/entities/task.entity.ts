@@ -40,13 +40,13 @@ export class TaskEntity extends Model {
   @ForeignKey(() => UserEntity)
   @Column({
     type: DataType.INTEGER,
-    allowNull: false,
+    allowNull: true,
   })
   public assigneeId: number;
 
   @BelongsTo(() => UserEntity, {
-    as: 'author',
-    foreignKey: 'authorId',
+    as: 'assignee',
+    foreignKey: 'assigneeId',
     onDelete: 'CASCADE',
   })
   public assignee: UserEntity;
