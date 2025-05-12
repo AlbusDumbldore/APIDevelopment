@@ -30,7 +30,22 @@ export class TaskService {
   async getOneById(id: TaskEntity['id']) {
     logger.info(`Чтение задачи по id=${id}`);
 
-    const task = await TaskEntity.findByPk(id);
+    const task = await TaskEntity.findOne({
+      where: { id },
+      attributes: ['id', 'title', 'description', 'importance', 'status'],
+      include: [
+        {
+          model: UserEntity,
+          as: 'author',
+          attributes: ['id', 'nick'],
+        },
+        {
+          model: UserEntity,
+          as: 'assignee',
+          attributes: ['id', 'nick'],
+        },
+      ],
+    });
     if (!task) {
       throw new NotFoundException(`Задача с id=${id} не найдена.`);
     }
