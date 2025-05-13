@@ -8,3 +8,8 @@ export interface Route {
 }
 
 export type Middleware = (req: Request, res: Response, next: NextFunction) => void;
+
+export enum Roles {
+  admin = 'admin',
+  user = 'user',
+}
