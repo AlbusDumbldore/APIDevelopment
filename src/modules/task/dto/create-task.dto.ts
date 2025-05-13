@@ -1,4 +1,4 @@
-import { IsEnum, IsString, MaxLength } from 'class-validator';
+import { IsEnum, IsNumber, IsString, MaxLength } from 'class-validator';
 
 enum Importance {
   low = 'low',
@@ -26,4 +26,7 @@ export class CreateTaskDto {
 
   @IsEnum(Status)
   status: Status;
+
+  @IsNumber()
+  assigneeId: number;
 }

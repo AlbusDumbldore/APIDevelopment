@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
-import { BaseController } from '../../common';
+import { BaseController, PaginationDto } from '../../common';
 import { UnauthorizedException } from '../../exceptions';
+import { RoleGuard } from '../../guards';
 import logger from '../../logger';
 import { validate } from '../../validation';
-import { Route } from '../../validation/app.types';
+import { Roles, Route } from '../../validation/app.types';
 import { LoginUserDto, RegisterUserDto } from './dto';
 import { UserService } from './user.service';
 
@@ -18,6 +19,7 @@ export class UserController extends BaseController {
       { path: '/profile', handler: this.profile },
       { path: '/register', method: 'post', handler: this.register },
       { path: '/login', method: 'post', handler: this.login },
+      { path: '/', handler: this.getAllUsers, middleware: [RoleGuard(Roles.admin)] },
     ];
 
     this.addRoutes(routes);
@@ -31,9 +33,16 @@ export class UserController extends BaseController {
       throw new UnauthorizedException();
     }
 
-    const user = this.service.findOneById(userId);
+    const user = await this.service.findOneById(userId);
 
     res.json(user);
+  }
+
+  async getAllUsers(req: Request, res: Response) {
+    const dto = validate(PaginationDto, req.query);
+    const result = await this.service.getAllUsers(dto);
+
+    res.json(result);
   }
 
   async register(req: Request, res: Response) {
@@ -50,6 +59,7 @@ export class UserController extends BaseController {
     const profile = await this.service.login(instance);
 
     req.session.userId = profile.id;
+    req.session.userRole = profile.role;
 
     res.json(profile);
   }
