@@ -18,5 +18,5 @@ export class UserEntity extends Model {
   public password: string;
 
   @Column({ type: DataType.STRING, allowNull: false, defaultValue: Roles.user })
-  public role: string;
+  public role: Roles;
 }

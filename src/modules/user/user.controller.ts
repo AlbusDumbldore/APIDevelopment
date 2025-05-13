@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { BaseController, PaginationDto } from '../../common';
 import { UnauthorizedException } from '../../exceptions';
+import { RoleGuard } from '../../guards';
 import logger from '../../logger';
 import { validate } from '../../validation';
-import { Route } from '../../validation/app.types';
+import { Roles, Route } from '../../validation/app.types';
 import { LoginUserDto, RegisterUserDto } from './dto';
 import { UserService } from './user.service';
 
@@ -18,7 +19,7 @@ export class UserController extends BaseController {
       { path: '/profile', handler: this.profile },
       { path: '/register', method: 'post', handler: this.register },
       { path: '/login', method: 'post', handler: this.login },
-      { path: '/', handler: this.getAllUsers },
+      { path: '/', handler: this.getAllUsers, middleware: [RoleGuard(Roles.admin)] },
     ];
 
     this.addRoutes(routes);
@@ -58,6 +59,7 @@ export class UserController extends BaseController {
     const profile = await this.service.login(instance);
 
     req.session.userId = profile.id;
+    req.session.userRole = profile.role;
 
     res.json(profile);
   }

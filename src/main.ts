@@ -9,10 +9,12 @@ import logger from './logger';
 import { errorHandler, logRequestMiddleware } from './middlewares';
 import { taskController } from './modules/task/task.module';
 import { userController } from './modules/user/user.module';
+import { Roles } from './validation/app.types';
 
 declare module 'express-session' {
   interface SessionData {
     userId: number;
+    userRole: Roles;
   }
 }
 
