@@ -32,7 +32,7 @@ export class UserController extends BaseController {
       throw new UnauthorizedException();
     }
 
-    const user = this.service.findOneById(userId);
+    const user = await this.service.findOneById(userId);
 
     res.json(user);
   }
