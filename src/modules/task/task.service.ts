@@ -9,9 +9,9 @@ export class TaskService {
   async create(task: CreateTaskDto, authorId: UserEntity['id']): Promise<TaskEntity> {
     logger.info(`Создание задачи`);
 
-    const assigneeId = await UserEntity.findByPk(task.assigneeId);
-    if (!assigneeId) {
-      throw new NotFoundException(`Пользователь с id=${assigneeId} не найден.`);
+    const user = await UserEntity.findByPk(task.assigneeId);
+    if (!user) {
+      throw new NotFoundException(`Пользователь с id=${task.assigneeId} не найден.`);
     }
 
     const created = await TaskEntity.create({ ...task, authorId });
