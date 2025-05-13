@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { BaseController } from '../../common';
+import { BaseController, PaginationDto } from '../../common';
 import { UnauthorizedException } from '../../exceptions';
 import logger from '../../logger';
 import { validate } from '../../validation';
@@ -18,6 +18,7 @@ export class UserController extends BaseController {
       { path: '/profile', handler: this.profile },
       { path: '/register', method: 'post', handler: this.register },
       { path: '/login', method: 'post', handler: this.login },
+      { path: '/', handler: this.getAllUsers },
     ];
 
     this.addRoutes(routes);
@@ -34,6 +35,13 @@ export class UserController extends BaseController {
     const user = this.service.findOneById(userId);
 
     res.json(user);
+  }
+
+  async getAllUsers(req: Request, res: Response) {
+    const dto = validate(PaginationDto, req.query);
+    const result = await this.service.getAllUsers(dto);
+
+    res.json(result);
   }
 
   async register(req: Request, res: Response) {

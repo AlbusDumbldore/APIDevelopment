@@ -1,4 +1,5 @@
 import { compareSync, hashSync } from 'bcrypt';
+import { PaginationDto } from '../../common';
 import { UserEntity } from '../../database/entities/user.entity';
 import { BadRequestException, NotFoundException, UnauthorizedException } from '../../exceptions';
 import logger from '../../logger';
@@ -27,6 +28,14 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async getAllUsers(query: PaginationDto) {
+    logger.info('Чтение списка пользователей');
+
+    const users = await UserEntity.findAll(query);
+
+    return users;
   }
 
   async login(dto: Omit<User, 'id'>) {
