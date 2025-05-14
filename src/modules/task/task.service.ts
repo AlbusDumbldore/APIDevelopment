@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { TaskEntity } from '../../database/entities/task.entity';
 import { UserEntity } from '../../database/entities/user.entity';
 import { ForbiddenException, NotFoundException } from '../../exceptions';
@@ -22,9 +23,26 @@ export class TaskService {
   async getAll(query: FindAllTaskDto) {
     logger.info('Чтение списка задач');
 
-    const tasks = await TaskEntity.findAll(query);
+    const { limit, offset, search } = query;
 
-    return tasks;
+    const { rows, count } = await TaskEntity.findAndCountAll({
+      limit,
+      offset,
+    });
+
+    if (search) {
+      const result = await TaskEntity.findAll({
+        limit,
+        offset,
+        where: {
+          [Op.or]: [{ title: { [Op.iLike]: `%${search}%` } }, { description: { [Op.iLike]: `%${search}%` } }],
+        },
+      });
+
+      return { total: count, limit, offset, data: result };
+    }
+
+    return { total: count, limit, offset, data: rows };
   }
 
   async getOneById(id: TaskEntity['id']) {
