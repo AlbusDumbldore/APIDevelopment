@@ -71,6 +71,16 @@ export class TaskService {
     return task;
   }
 
+  // async getAllTasksUserAuthor(query: FindAllTaskDto, userId: UserEntity['id']) {
+  //   logger.info(`Чтение списка задач по authorId=${userId}`);
+  //
+  //   // const tasksAuthor = await UserEntity.findAll({});
+  //
+  //   const { rows } = await TaskEntity.findAndCountAll();
+  //
+  //   return { data: rows };
+  // }
+
   async delete(id: TaskEntity['id'], userId: UserEntity['id']) {
     logger.info(`Удаление задачи по id=${id}`);
     const task = await TaskEntity.findByPk(id);
