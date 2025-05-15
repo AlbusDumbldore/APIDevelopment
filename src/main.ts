@@ -4,6 +4,8 @@ import express from 'express';
 import expressSession from 'express-session';
 import { Container } from 'inversify';
 import { logRoutes } from './bootstrap';
+import { redisModule } from './cache/redis.module';
+import { RedisService } from './cache/redis.service';
 import { appConfig } from './config';
 import { connect } from './database/connect';
 import logger from './logger';
@@ -22,8 +24,11 @@ declare module 'express-session' {
 }
 
 const bootstrap = async () => {
-  const app = Container.merge(userModule, taskModule);
+  const app = Container.merge(userModule, taskModule, redisModule);
   await connect();
+
+  const redisService = app.get(RedisService);
+  await redisService.connect();
 
   const server = express(); // http://localhost:2000
 
