@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { inject, injectable } from 'inversify';
 import { BaseController, IdNumberDto } from '../../common';
 import { UnauthorizedException } from '../../exceptions';
 import { validate } from '../../validation';
@@ -7,8 +8,12 @@ import { CreateTaskDto } from './dto';
 import { FindAllTaskDto } from './dto/find-all-task.dto';
 import { TaskService } from './task.service';
 
+@injectable()
 export class TaskController extends BaseController {
-  constructor(private readonly service: TaskService) {
+  constructor(
+    @inject(TaskService)
+    private readonly service: TaskService,
+  ) {
     super();
 
     this.initRoutes();
@@ -18,6 +23,7 @@ export class TaskController extends BaseController {
     const routes: Route[] = [
       { path: '/', method: 'post', handler: this.create },
       { path: '/', handler: this.getAll },
+      { path: '/my/authored', handler: this.getAllAuthoredTasks },
       { path: '/:id', handler: this.getOneById },
       { path: '/:id', method: 'delete', handler: this.delete },
     ];
@@ -40,6 +46,18 @@ export class TaskController extends BaseController {
   async getAll(req: Request, res: Response) {
     const dto = validate(FindAllTaskDto, req.query);
     const result = await this.service.getAll(dto);
+
+    res.json(result);
+  }
+
+  async getAllAuthoredTasks(req: Request, res: Response) {
+    const userId = req.session.userId;
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+
+    const dto = validate(FindAllTaskDto, req.query);
+    const result = await this.service.getAuthoredTasks(dto, userId);
 
     res.json(result);
   }

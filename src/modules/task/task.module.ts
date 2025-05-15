@@ -1,5 +1,8 @@
+import { Container } from 'inversify';
 import { TaskController } from './task.controller';
 import { TaskService } from './task.service';
 
-const service = new TaskService();
-export const taskController = new TaskController(service);
+export const taskModule = new Container();
+
+taskModule.bind(TaskService).toSelf();
+taskModule.bind(TaskController).toSelf();

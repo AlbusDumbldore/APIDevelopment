@@ -1,10 +1,12 @@
 import { compareSync, hashSync } from 'bcrypt';
+import { injectable } from 'inversify';
 import { PaginationDto } from '../../common';
 import { UserEntity } from '../../database/entities/user.entity';
 import { BadRequestException, NotFoundException, UnauthorizedException } from '../../exceptions';
 import logger from '../../logger';
 import { User } from './user.types';
 
+@injectable()
 export class UserService {
   async register(dto: Omit<User, 'id'>) {
     logger.info(`Регистрация email=${dto.email}`);
