@@ -1,3 +1,4 @@
+import { injectable } from 'inversify';
 import { Op } from 'sequelize';
 import { TaskEntity } from '../../database/entities/task.entity';
 import { UserEntity } from '../../database/entities/user.entity';
@@ -6,6 +7,7 @@ import logger from '../../logger';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskDto } from './dto/find-all-task.dto';
 
+@injectable()
 export class TaskService {
   async create(task: CreateTaskDto, authorId: UserEntity['id']): Promise<TaskEntity> {
     logger.info(`Создание задачи`);

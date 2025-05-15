@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { inject, injectable } from 'inversify';
 import { BaseController, PaginationDto } from '../../common';
 import { UnauthorizedException } from '../../exceptions';
 import { RoleGuard } from '../../guards';
@@ -8,8 +9,12 @@ import { Roles, Route } from '../../validation/app.types';
 import { LoginUserDto, RegisterUserDto } from './dto';
 import { UserService } from './user.service';
 
+@injectable()
 export class UserController extends BaseController {
-  constructor(private readonly service: UserService) {
+  constructor(
+    @inject(UserService)
+    private readonly service: UserService,
+  ) {
     super();
 
     this.initRoutes();

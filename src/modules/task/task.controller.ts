@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { inject, injectable } from 'inversify';
 import { BaseController, IdNumberDto } from '../../common';
 import { UnauthorizedException } from '../../exceptions';
 import { validate } from '../../validation';
@@ -7,8 +8,12 @@ import { CreateTaskDto } from './dto';
 import { FindAllTaskDto } from './dto/find-all-task.dto';
 import { TaskService } from './task.service';
 
+@injectable()
 export class TaskController extends BaseController {
-  constructor(private readonly service: TaskService) {
+  constructor(
+    @inject(TaskService)
+    private readonly service: TaskService,
+  ) {
     super();
 
     this.initRoutes();
