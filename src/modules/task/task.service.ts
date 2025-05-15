@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { TaskEntity } from '../../database/entities/task.entity';
 import { UserEntity } from '../../database/entities/user.entity';
 import { ForbiddenException, NotFoundException } from '../../exceptions';
@@ -27,22 +27,19 @@ export class TaskService {
 
     const { limit, offset, search } = query;
 
-    const { rows, count } = await TaskEntity.findAndCountAll({
-      limit,
-      offset,
-    });
+    let where: WhereOptions<TaskEntity> = {};
 
     if (search) {
-      const result = await TaskEntity.findAll({
-        limit,
-        offset,
-        where: {
-          [Op.or]: [{ title: { [Op.iLike]: `%${search}%` } }, { description: { [Op.iLike]: `%${search}%` } }],
-        },
-      });
-
-      return { total: count, limit, offset, data: result };
+      where = {
+        [Op.or]: [{ title: { [Op.iLike]: `%${search}%` } }, { description: { [Op.iLike]: `%${search}%` } }],
+      };
     }
+
+    const { count, rows } = await TaskEntity.findAndCountAll({
+      limit,
+      offset,
+      where,
+    });
 
     return { total: count, limit, offset, data: rows };
   }
@@ -73,15 +70,15 @@ export class TaskService {
     return task;
   }
 
-  // async getAllTasksUserAuthor(query: FindAllTaskDto, userId: UserEntity['id']) {
-  //   logger.info(`Чтение списка задач по authorId=${userId}`);
-  //
-  //   // const tasksAuthor = await UserEntity.findAll({});
-  //
-  //   const { rows } = await TaskEntity.findAndCountAll();
-  //
-  //   return { data: rows };
-  // }
+  async getAuthoredTasks(query: FindAllTaskDto, authorId: UserEntity['id']) {
+    logger.info(`Чтение списка задач по authorId=${authorId}`);
+
+    const { rows, count } = await TaskEntity.findAndCountAll({
+      where: { authorId },
+    });
+
+    return { data: rows };
+  }
 
   async delete(id: TaskEntity['id'], userId: UserEntity['id']) {
     logger.info(`Удаление задачи по id=${id}`);
