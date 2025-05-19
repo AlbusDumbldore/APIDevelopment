@@ -23,7 +23,8 @@ export class TaskController extends BaseController {
     const routes: Route[] = [
       { path: '/', method: 'post', handler: this.create },
       { path: '/', handler: this.getAll },
-      { path: '/my/authored', handler: this.getAllAuthoredTasks },
+      { path: '/my/authored', handler: this.getAuthoredTasks },
+      { path: '/my/assigneed', handler: this.getAssignedTasks },
       { path: '/:id', handler: this.getOneById },
       { path: '/:id', method: 'delete', handler: this.delete },
     ];
@@ -50,7 +51,7 @@ export class TaskController extends BaseController {
     res.json(result);
   }
 
-  async getAllAuthoredTasks(req: Request, res: Response) {
+  async getAuthoredTasks(req: Request, res: Response) {
     const userId = req.session.userId;
     if (!userId) {
       throw new UnauthorizedException();
@@ -58,6 +59,18 @@ export class TaskController extends BaseController {
 
     const dto = validate(FindAllTaskDto, req.query);
     const result = await this.service.getAuthoredTasks(dto, userId);
+
+    res.json(result);
+  }
+
+  async getAssignedTasks(req: Request, res: Response) {
+    const userId = req.session.userId;
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+
+    const dto = validate(FindAllTaskDto, req.query);
+    const result = await this.service.getAssignedTasks(dto, userId);
 
     res.json(result);
   }

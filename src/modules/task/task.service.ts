@@ -73,8 +73,18 @@ export class TaskService {
   async getAuthoredTasks(query: FindAllTaskDto, authorId: UserEntity['id']) {
     logger.info(`Чтение списка задач по authorId=${authorId}`);
 
-    const { rows, count } = await TaskEntity.findAndCountAll({
+    const { rows } = await TaskEntity.findAndCountAll({
       where: { authorId },
+    });
+
+    return { data: rows };
+  }
+
+  async getAssignedTasks(query: FindAllTaskDto, assigneeId: UserEntity['id']) {
+    logger.info(`Чтение списка задач по assigneeId=${assigneeId}`);
+
+    const { rows } = await TaskEntity.findAndCountAll({
+      where: { assigneeId },
     });
 
     return { data: rows };
