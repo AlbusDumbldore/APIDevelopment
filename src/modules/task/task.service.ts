@@ -1,5 +1,7 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { Op, WhereOptions } from 'sequelize';
+import { cacheKeyForTask } from '../../cache/redis.keys';
+import { RedisService } from '../../cache/redis.service';
 import { TaskEntity } from '../../database/entities/task.entity';
 import { UserEntity } from '../../database/entities/user.entity';
 import { ForbiddenException, NotFoundException } from '../../exceptions';
@@ -9,6 +11,8 @@ import { FindAllTaskDto } from './dto/find-all-task.dto';
 
 @injectable()
 export class TaskService {
+  constructor(@inject(RedisService) private readonly redisService: RedisService) {}
+
   async create(task: CreateTaskDto, authorId: UserEntity['id']): Promise<TaskEntity> {
     logger.info(`Создание задачи`);
 
@@ -47,6 +51,12 @@ export class TaskService {
   async getOneById(id: TaskEntity['id']) {
     logger.info(`Чтение задачи по id=${id}`);
 
+    const cache = await this.redisService.getJson(cacheKeyForTask(id));
+    if (cache) {
+      logger.info(`Задача возвращена из кеша`);
+      return cache;
+    }
+
     const task = await TaskEntity.findOne({
       where: { id },
       attributes: ['id', 'title', 'description', 'importance', 'status'],
@@ -66,6 +76,8 @@ export class TaskService {
     if (!task) {
       throw new NotFoundException(`Задача с id=${id} не найдена.`);
     }
+    logger.info(`Задача записана в кеш`);
+    await this.redisService.setJson(cacheKeyForTask(id), task, { expiration: { type: 'EX', value: 300 } });
 
     return task;
   }

@@ -17,3 +17,7 @@ services: # Список сервисов
     restart: unless-stopped
     ports:
       - "6379:6379"
+#    environment: # Передача переменных окружения (настройки)
+#      REDIS_USER: redis
+#      REDIS_PASSWORD: redispassword
+#      REDIS_DB: 0

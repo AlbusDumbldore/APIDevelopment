@@ -4,7 +4,7 @@ import { createClient, SetOptions } from 'redis';
 @injectable()
 export class RedisService {
   private readonly client = createClient({
-    url: 'redis://default:redispassword@localhost:6390/0',
+    url: 'redis://default:redispassword@localhost:6379/0',
   });
 
   async connect() {
