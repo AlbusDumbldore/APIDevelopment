@@ -76,7 +76,7 @@ export class TaskController extends BaseController {
   }
 
   async delete(req: Request, res: Response) {
-    const { id } = validate(IdNumberDto, req.params.id);
+    const { id } = validate(IdNumberDto, req.params);
 
     const userId = req.session.userId;
     if (!userId) {
