@@ -24,6 +24,9 @@ export class AppConfigDto {
   @Type(() => Number)
   port: number;
 
+  @IsString()
+  redisUrl: string;
+
   @ValidateNested()
   @Transform(({ value }) => plainToInstance(ConfigSequelize, value))
   postgres: ConfigSequelize;

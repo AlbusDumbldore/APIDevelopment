@@ -1,10 +1,11 @@
 import { injectable } from 'inversify';
 import { createClient, SetOptions } from 'redis';
+import { appConfig } from '../config';
 
 @injectable()
 export class RedisService {
   private readonly client = createClient({
-    url: 'redis://default:redispassword@localhost:6379/0',
+    url: appConfig.redisUrl,
   });
 
   async connect() {

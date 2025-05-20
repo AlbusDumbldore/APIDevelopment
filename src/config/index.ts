@@ -11,6 +11,7 @@ type EnvStructure<T> = {
 
 const rawConfig: EnvStructure<AppConfigDto> = {
   port: process.env.PORT,
+  redisUrl: process.env.REDIS_URL,
   postgres: {
     port: process.env.POSTGRESQL_PORT,
     host: process.env.POSTGRESQL_HOST,

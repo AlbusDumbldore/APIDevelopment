@@ -64,12 +64,12 @@ export class TaskService {
         {
           model: UserEntity,
           as: 'author',
-          attributes: ['id', 'nick'],
+          attributes: ['id', 'username'],
         },
         {
           model: UserEntity,
           as: 'assignee',
-          attributes: ['id', 'nick'],
+          attributes: ['id', 'username'],
         },
       ],
     });

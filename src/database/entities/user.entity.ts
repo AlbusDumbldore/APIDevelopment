@@ -19,4 +19,7 @@ export class UserEntity extends Model {
 
   @Column({ type: DataType.STRING, allowNull: false, defaultValue: Roles.user })
   public role: Roles;
+
+  @Column({ type: DataType.STRING, allowNull: true })
+  public username: string;
 }
